@@ -1,0 +1,108 @@
+
+
+html_box = f"""
+<div style="background-color:white; padding:10px; border:1px solid gray; margin-top: 10px;  font-family: 'Roboto', sans-serif;">
+<h3 style="color: black;">Number of Companies in the database: {comp.shape[0]}</h3>
+</div>
+"""
+
+# Create a second HTML box with a placeholder for the description
+html_box2 = """
+<div style="background-color:white; padding:10px; border:1px solid gray; margin-top: 10px; font-family: 'Roboto', sans-serif;">
+<h3 id="company-description2" style="color: black;"> </h3>
+</div>
+"""
+
+# Create a third HTML box with a placeholder for the description
+html_box3 = """
+<div style="background-color:white; padding:10px; border:1px solid gray; margin-top: 10px; font-family:  font-family: 'Roboto', sans-serif;">
+<h3 id="company-description" style="color: black;"> </h3>
+</div>
+"""
+
+
+html_content = f"""
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+<title>Life Sciences Directory Berlin-Brandenburg, visualized</title>
+<style>
+body {{
+  font-family: 'Open Sans', sans-serif;
+    color: black; /* Add this line to make all font black */
+}}
+.container {{
+  display: flex;
+}}
+.plot-container {{
+  flex: 2;
+}}
+.info-container {{
+  flex: 1;
+  margin-left: 20px;
+}}
+</style>
+</head>
+<body>
+<h1>Life Sciences Directory Berlin-Brandenburg, visualized</h1>
+<h2>Hover over point to read description and keywords. Click to go to the website</h2>
+
+<h2>Download database and code from <a href="https://github.com/micha-blip/company-map/">project GitHub</a></h2>
+
+<div class="container">
+  <div class="plot-container">{f.to_html()}</div>
+  <div class="info-container">
+    {html_box}
+    {html_box3}
+    {html_box2}
+
+    <div id="click-description" style="margin-top: 10px; color: black;"></div>
+  </div>
+</div>
+
+<script>
+  const plotlyFigureDiv = document.querySelector('.js-plotly-plot');
+
+  const descriptionElement = document.getElementById('hover-description');
+  const companyDescriptionElement = document.getElementById('company-description');
+  const companyDescriptionElement2 = document.getElementById('company-description2');
+
+  plotlyFigureDiv.on('plotly_hover', function(data) {{
+    const description = data.points[0].text;
+    const customData = data.points[0].customdata[1];
+    const customData2 = data.points[0].customdata[2];
+    companyDescriptionElement.innerHTML = customData;
+    companyDescriptionElement2.innerHTML = customData2;
+
+
+  }});
+
+  plotlyFigureDiv.on('plotly_click', function(data) {{
+    const customData = data.points[0].customdata;
+    if (customData) {{
+      window.open(customData[0], '_blank');
+    }}
+  }});
+
+
+</script>
+
+<p><small>
+    <strong>Disclaimer:</strong> This visualization is for informational purposes only and is generated based on publicly available data (text from websites) and automated analysis. While reasonable efforts have been made to ensure accuracy, the creator of this visualization ("Creator") makes no warranties or representations, express or implied, as to the completeness, accuracy, reliability, suitability, or availability of the information contained herein. The Creator disclaims all liability for any errors, omissions, or misrepresentations that may be present.
+    <br><br>
+    The visualization should not be relied upon for making decisions about any company or organization. Users are encouraged to conduct their own independent research and verification. Any reliance you place on such information is strictly at your own risk. The Creator will not be liable for any loss or damage including without limitation, indirect or consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits arising out of, or in connection with, the use of this visualization.
+    <br><br>
+    Inaccuracies in the visualization, including those related to embedding techniques, are unintentional and should not be considered defamatory. For the most up-to-date and accurate information about any company or organization, please refer to their official website or other primary sources.
+    <br><br>
+    By using this visualization, you acknowledge and agree to the terms of this disclaimer.
+</small></p>
+
+
+</body>
+</html>
+"""
